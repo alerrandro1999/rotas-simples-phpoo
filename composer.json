@@ -1,0 +1,8 @@
+{
+    "name": "alerrandro/rotas-simples",
+    "autoload": {
+        "psr-4": {
+            "app\\": "app/"
+        }
+    }
+}
