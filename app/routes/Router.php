@@ -1,5 +1,10 @@
 <?php
+
 namespace app\routes;
+
+use app\helpers\Request;
+use app\helpers\Uri;
+use Exception;
 
 class Router
 {
@@ -8,7 +13,7 @@ class Router
     {
         try {
             //verificar se o controller existe
-            $controllerNamespace = self::CONTROLLER_NAMESPACE.'\\'.$controller;
+            $controllerNamespace = self::CONTROLLER_NAMESPACE . '\\' . $controller;
             if (!class_exists($controllerNamespace)) {
                 throw new \Exception("O Controller {$controller} não existe");
             }
@@ -20,26 +25,46 @@ class Router
             }
 
             $controllerInstance->$method();
-
         } catch (\Throwable $th) {
             echo $th->getMessage();
         }
     }
-    public static function  routes() : array
+    public static function  routes(): array
     {
         return [
             'get' => [
-                '/' => self::load('HomeController','index'),
-                '/contact' => self::load('ContactController', 'index')
+                '/' => fn() => self::load('HomeController', 'index'),
             ],
             'post' => [
-                '/contact' => 'ContactController'
             ],
-            'put' => [
+            'put' => [],
+            'delete' => []
+        ];
+    }
 
-            ],
-            'delete' => [
-            ]
-            ];
+    public static function execute()
+    {
+        try {
+            $routes = self::routes();
+            $request = Request::get();
+            $uri = Uri::get('path');
+
+         
+
+            if (!isset($routes[$request])) {
+                throw new Exception('A rota não existe');
+            }
+
+            if (!array_key_exists($uri, $routes[$request])) {
+                throw new Exception('A rota não existe');
+            }
+
+            $router = $routes[$request][$uri];
+
+            $router();
+
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+        }
     }
 }
