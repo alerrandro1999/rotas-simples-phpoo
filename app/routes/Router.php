@@ -61,6 +61,10 @@ class Router
 
             $router = $routes[$request][$uri];
 
+            if (!is_callable($router)) {
+                throw new Exception("A rota {$uri} não existe");
+            }
+
             $router();
 
         } catch (\Throwable $th) {
