@@ -2,10 +2,12 @@
 
 namespace app\controllers;
 
-class HomeController{
+use app\Controllers\Controller;
+
+class HomeController extends Controller{
     
     public function index()
     {
-        var_dump('index');
+        $this->view('home');
     }
 }
